@@ -1,4 +1,4 @@
-(ns e2e.websocket-driver
+(ns meldinger.server.e2e.infrastructure.websocket-driver
   (:require [gniazdo.core :as gniazdo]
             [clojure.core.async :as async :refer [>!!]]))
 

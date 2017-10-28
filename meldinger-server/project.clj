@@ -13,5 +13,5 @@
 
   :profiles {:dev {:plugins [[com.jakemccrary/lein-test-refresh "0.21.1"]
                              [venantius/ultra "0.5.1"]]}}
-  :test-selectors {:default (complement #{:integration :suite})
-                   :integration :integration})
+  :test-selectors {:default (complement :suite)
+                   :e2e :e2e})

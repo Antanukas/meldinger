@@ -1,6 +1,6 @@
-(ns e2e.embedded-environment
-  (:require [e2e.websocket-driver :as ws-driver]
-            [meldinger-server.server :as server]
+(ns meldinger.server.e2e.infrastructure.embedded-environment
+  (:require [meldinger.server.e2e.infrastructure.websocket-driver :as ws-driver]
+            [meldinger.server.server :as server]
             [clojure.test :as test]))
 
 (def env (atom {}))

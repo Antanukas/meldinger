@@ -1,7 +1,7 @@
-(ns e2e.websocket-e2e
+(ns meldinger.server.e2e.websocket-e2e
   (:require [clojure.test :refer :all]
-            [e2e.embedded-environment :as env]
-            [e2e.websocket-driver :as ws-driver]
+            [meldinger.server.e2e.infrastructure.embedded-environment :as env]
+            [meldinger.server.e2e.infrastructure.websocket-driver :as ws-driver]
             [clojure.core.async :as async :refer [<!!]]))
 
 (defn timed<!!
