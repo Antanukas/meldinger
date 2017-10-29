@@ -13,7 +13,7 @@
      payload)))
 
 (deftest ^:suite ping-pong
-  (testing "should respond with pong to ping"
-    (let [_ (ws-driver/send-text (env/ws) "ping")
-          message (timed<!! (env/ws-chan))]
-      (is (= "pong" message)))))
+  (testing "should handle ping/pong json"
+    (do
+      (ws-driver/send-json (env/ws) {:type "ping"})
+      (is (= {:type "pong"} (ws-driver/pop-frame (env/ws)))))))

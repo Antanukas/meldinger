@@ -3,18 +3,19 @@
             [meldinger.server.server :as server]
             [clojure.test :as test]))
 
-(def env (atom {}))
+(defrecord Environment [ws])
+
+(def ^:private env (atom nil))
+
+(defn ws [] (:ws @env))
+(defn ws-chan []
+  (ws-driver/chan-of (ws)))
 
 (defn start []
   (do
     (server/start-server)
     (let [ws (ws-driver/connect "ws://localhost:8081")]
-      (reset! env {:ws ws}))))
+      (reset! env (->Environment ws)))))
 
 (defn stop []
   (do (server/stop-server)))
-
-(defn ws [] (:ws @env))
-(defn ws-chan []
-  ;(get-chan (:ws @env)))
-  (:frame-chan (:ws @env)))

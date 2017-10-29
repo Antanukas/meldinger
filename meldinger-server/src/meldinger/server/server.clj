@@ -1,12 +1,23 @@
 (ns meldinger.server.server
-  (:use [org.httpkit.server]))
+  (:use [org.httpkit.server])
+  (:require [clojure.data.json :as json]))
 
 (defn ping-pong [data]
-  (if (= data "ping") "pong" "not a ping"))
+  (if (= data {:type "ping"}) {:type "pong"} {:type "not-a-ping"}))
+
+(defn handle-ws [data-map]
+  (ping-pong data-map))
+
+(defn ws-receive-handler [channel]
+  (fn [^String data]
+    (let [req (json/read-str data :key-fn keyword)
+          resp (handle-ws req)
+          resp-as-string (json/write-str resp)]
+      (if resp (send! channel resp-as-string) nil))))
 
 (defn handler [req]
   (with-channel req channel
-                (on-receive channel (fn [data] (send! channel (ping-pong data))))))
+                (on-receive channel (ws-receive-handler channel))))
 
 (def ^:private server-atom (atom nil))
 
