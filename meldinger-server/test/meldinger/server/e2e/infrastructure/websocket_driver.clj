@@ -19,9 +19,6 @@
     (gniazdo/close (:socket ws))
     (async/close! (:frame-chan ws))))
 
-(defn send-text [^GniazdoSocket ws ^String data]
-  (gniazdo/send-msg (:socket ws) data))
-
 (defn send-json [^GniazdoSocket ws data-map]
   (gniazdo/send-msg (:socket ws) (json/write-str data-map)))
 

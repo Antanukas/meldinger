@@ -8,8 +8,6 @@
 (def ^:private env (atom nil))
 
 (defn ws [] (:ws @env))
-(defn ws-chan []
-  (ws-driver/chan-of (ws)))
 
 (defn start []
   (do
