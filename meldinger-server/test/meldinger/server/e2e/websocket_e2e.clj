@@ -13,6 +13,7 @@
       (ws-driver/send-json (env/ws) {:type "Ping"})
       (is (= {:type "Pong"} (ws-driver/pop-frame (env/ws)))))))
 
+(declare given-chatroom-created)
 
 (deftest ^:suite commands
   (testing "CreateChatroomCommand"
@@ -23,6 +24,20 @@
           _ (ws-driver/send-json (env/ws) command)
 
           received-event (map->ChatroomCreatedEvent (ws-driver/pop-frame (env/ws)))]
+      (is (= expected-event received-event))))
+
+  (testing "SendMessageCommand"
+    (let [chatroom-id (a-uuid)
+
+          _ (given-chatroom-created chatroom-id)
+
+          expected-event (->MessageSentEvent chatroom-id "Test Text" "MessageSentEvent")
+          command (->SendMessageCommand chatroom-id "Test Text" "SendMessageCommand")
+          _ (ws-driver/send-json (env/ws) command)
+
+          received-event (map->MessageSentEvent (ws-driver/pop-frame (env/ws)))]
       (is (= expected-event received-event)))))
 
 
+(defn given-chatroom-created [chatroom-id]
+  (ws-driver/send-json (env/ws) (->CreateChatroomCommand chatroom-id "CreateChatroomCommand")))
