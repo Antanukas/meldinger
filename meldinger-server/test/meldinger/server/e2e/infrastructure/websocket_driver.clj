@@ -4,10 +4,14 @@
             [clojure.data.json :as json]))
 
 (defrecord GniazdoSocket [socket frame-chan])
+(def received (atom []))
 
 (defn connect [^String url]
   (let [chan (async/chan 200)
-        on-frame (fn [^String data] (>!! chan (json/read-str data :key-fn keyword)))
+        on-frame (fn [^String data]
+                   (do
+                     (println "web-socket received: ", data)
+                     (swap! received conj (json/read-str data :key-fn keyword))))
         socket (gniazdo/connect url :on-receive on-frame)]
     (->GniazdoSocket socket chan)))
 
@@ -27,8 +31,10 @@
    (timed<!! chan 1000))
   ([chan timeout-ms]
    (let [timed-chan (async/timeout timeout-ms)
-         payload (<!! (async/pipe chan timed-chan))]
+         payload (<!! (async/pipe chan timed-chan))
+         _ (async/close! timed-chan)]
      payload)))
 
 (defn pop-frame [^GniazdoSocket ws]
-  (timed<!! (chan-of ws)))
+  (Thread/sleep 200) ;TODO implement eventually
+  (last @received))

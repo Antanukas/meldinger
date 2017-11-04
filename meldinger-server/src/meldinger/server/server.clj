@@ -1,19 +1,24 @@
 (ns meldinger.server.server
   (:use [org.httpkit.server])
-  (:require [clojure.data.json :as json]))
+  (:require [clojure.data.json :as json]
+            [meldinger.server.handlers :refer [from-map handle-command]]))
 
-(defn ping-pong [data]
-  (if (= data {:type "ping"}) {:type "pong"} {:type "not-a-ping"}))
+(defn invoke-handler [data-map] (handle-command (from-map data-map)))
 
-(defn handle-ws [data-map]
-  (ping-pong data-map))
+(defrecord Ping [type])
+(defrecord Pong [type])
+(defmethod from-map "Ping" [data-map] (map->Ping data-map))
+(defmethod handle-command Ping [ping] (->Pong "Pong"))
+
 
 (defn ws-receive-handler [channel]
   (fn [^String data]
     (let [req (json/read-str data :key-fn keyword)
-          resp (handle-ws req)
-          resp-as-string (json/write-str resp)]
-      (if resp (send! channel resp-as-string) nil))))
+          resp (invoke-handler req)
+          _ (println "aaa" resp)
+          resp-as-string (json/write-str resp)
+          _ (println "ooo" resp-as-string)]
+      (if resp-as-string (send! channel resp-as-string) nil))))
 
 (defn handler [req]
   (with-channel req channel

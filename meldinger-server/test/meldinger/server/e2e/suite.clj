@@ -11,6 +11,7 @@
     (env/start)
 
     (meldinger.server.e2e.websocket-e2e/ping-pong)
+    (meldinger.server.e2e.websocket-e2e/commands)
 
     (finally (env/stop))))
 
