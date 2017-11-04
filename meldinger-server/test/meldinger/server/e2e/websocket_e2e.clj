@@ -22,7 +22,6 @@
 
           _ (ws-driver/send-json (env/ws) command)
 
-          _ (println "zz" (ws-driver/pop-frame (env/ws)))
           received-event (map->ChatroomCreatedEvent (ws-driver/pop-frame (env/ws)))]
       (is (= expected-event received-event)))))
 

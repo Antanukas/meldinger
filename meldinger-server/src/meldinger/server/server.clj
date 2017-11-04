@@ -15,9 +15,7 @@
   (fn [^String data]
     (let [req (json/read-str data :key-fn keyword)
           resp (invoke-handler req)
-          _ (println "aaa" resp)
-          resp-as-string (json/write-str resp)
-          _ (println "ooo" resp-as-string)]
+          resp-as-string (json/write-str resp)]
       (if resp-as-string (send! channel resp-as-string) nil))))
 
 (defn handler [req]
